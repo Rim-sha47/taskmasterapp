@@ -477,8 +477,6 @@ JWT_SECRET=
 PORT=
 
 ---
-
-# Author
 # Contributors
 
 **Peetla Mahesh** – Backend Developer
