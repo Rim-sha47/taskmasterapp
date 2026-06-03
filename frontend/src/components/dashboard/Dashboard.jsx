@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useMemo, useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useSearch } from '../../context/SearchContext';
 import StatCard from '../common/StatCard';
@@ -6,47 +6,77 @@ import WeeklyInsights from './WeeklyInsights';
 import TaskAnalytics from '../charts/TaskAnalytics';
 import PriorityChart from './PriorityChart';
 import { CheckCircle, Clock, FileText, Zap } from 'lucide-react';
-
-const stats = [
-  {
-    icon: Zap,
-    label: 'Total Tasks',
-    value: '156',
-    subtitle: '+12 this week',
-    glowColor: 'purple',
-  },
-  {
-    icon: Clock,
-    label: 'In Progress',
-    value: '34',
-    subtitle: '21.8% of total',
-    glowColor: 'cyan',
-  },
-  {
-    icon: FileText,
-    label: 'Reviews',
-    value: '8',
-    subtitle: 'Awaiting approval',
-    glowColor: 'purple',
-  },
-  {
-    icon: CheckCircle,
-    label: 'Completions',
-    value: '89',
-    subtitle: '+5 from yesterday',
-    glowColor: 'cyan',
-  },
-];
+import { getDashboardStats } from '../../services/dashboardService';
 
 export default function Dashboard() {
   const { searchQuery } = useSearch();
+
+  const [dashboardStats, setDashboardStats] = useState({
+    totalTasks: 0,
+    inProgress: 0,
+    review: 0,
+    completed: 0,
+  });
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, []);
+
+  const fetchDashboardStats = async () => {
+    try {
+      const response = await getDashboardStats();
+
+      setDashboardStats({
+        totalTasks: response.data.stats.totalTasks || 0,
+        inProgress: response.data.stats.inProgress || 0,
+        review: response.data.stats.review || 0,
+        completed: response.data.stats.completed || 0,
+      });
+    } catch (error) {
+      console.error("Dashboard API Error:", error);
+    }
+  };
+
+  const stats = [
+    {
+      icon: Zap,
+      label: 'Total Tasks',
+      value: dashboardStats.totalTasks,
+      subtitle: 'All tasks',
+      glowColor: 'purple',
+    },
+    {
+      icon: Clock,
+      label: 'In Progress',
+      value: dashboardStats.inProgress,
+      subtitle: 'Currently active',
+      glowColor: 'cyan',
+    },
+    {
+      icon: FileText,
+      label: 'Reviews',
+      value: dashboardStats.review,
+      subtitle: 'Awaiting approval',
+      glowColor: 'purple',
+    },
+    {
+      icon: CheckCircle,
+      label: 'Completions',
+      value: dashboardStats.completed,
+      subtitle: 'Successfully finished',
+      glowColor: 'cyan',
+    },
+  ];
+
   const filteredStats = useMemo(() => {
     if (!searchQuery.trim()) return stats;
-    return stats.filter((stat) =>
-      stat.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      stat.subtitle.toLowerCase().includes(searchQuery.toLowerCase()),
+
+    return stats.filter(
+      (stat) =>
+        stat.label.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        stat.subtitle.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [searchQuery]);
+  }, [searchQuery, stats]);
 
   return (
     <motion.div
@@ -75,10 +105,13 @@ export default function Dashboard() {
         {filteredStats.length > 0 ? (
           filteredStats.map((stat, index) => (
             <motion.div
-              key={index}
+              key={stat.label}
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.5, delay: 0.1 * (index + 1) }}
+              transition={{
+                duration: 0.5,
+                delay: 0.1 * (index + 1),
+              }}
             >
               <StatCard {...stat} />
             </motion.div>
@@ -96,13 +129,8 @@ export default function Dashboard() {
 
       {/* Analytics Grid */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {/* Weekly Insights */}
         <WeeklyInsights />
-
-        {/* Task Analytics Chart */}
         <TaskAnalytics />
-
-        {/* Priority Chart */}
         <PriorityChart />
       </div>
     </motion.div>

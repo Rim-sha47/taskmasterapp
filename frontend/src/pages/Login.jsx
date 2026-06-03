@@ -2,35 +2,58 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Logo from '../components/common/Logo';
-
-const credentials = {
-  email: 'admin@taskmaster.com',
-  password: 'admin123',
-};
+import { login } from '../services/authService';
+import { Link } from "react-router-dom";
 
 export default function Login() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword, setShowPassword] =
+    useState(false);
   const [remember, setRemember] = useState(true);
   const [error, setError] = useState('');
+
   const navigate = useNavigate();
 
   useEffect(() => {
-    if (localStorage.getItem('taskmaster_auth') === 'true') {
-      navigate('/dashboard', { replace: true });
+    const token = localStorage.getItem('token');
+
+    if (token) {
+      navigate('/dashboard', {
+        replace: true,
+      });
     }
   }, [navigate]);
 
-  const handleSubmit = event => {
+  const handleSubmit = async (event) => {
     event.preventDefault();
-    if (email.trim() === credentials.email && password === credentials.password) {
-      localStorage.setItem('taskmaster_auth', 'true');
-      localStorage.setItem('taskmaster_user', credentials.email);
-      navigate('/dashboard', { replace: true });
-      return;
+
+    try {
+      setError('');
+
+      const response = await login({
+        email,
+        password,
+      });
+
+      const token = response.data.token;
+
+      localStorage.setItem('token', token);
+
+      localStorage.setItem(
+        'user',
+        JSON.stringify(response.data.user)
+      );
+
+      navigate('/dashboard', {
+        replace: true,
+      });
+    } catch (error) {
+      setError(
+        error.response?.data?.message ||
+          'Invalid credentials'
+      );
     }
-    setError('Incorrect credentials. Use admin@taskmaster.com / admin123');
   };
 
   return (
@@ -45,53 +68,93 @@ export default function Login() {
           <div className="space-y-8">
             <div className="flex items-center gap-4">
               <Logo className="h-14 w-14 rounded-3xl bg-[#0f172a] p-2" />
+
               <div>
-                <h1 className="text-3xl font-bold text-text-primary">TaskMaster Login</h1>
-                <p className="text-text-secondary">Access your premium dashboard experience.</p>
+                <h1 className="text-3xl font-bold text-text-primary">
+                  TaskMaster Login
+                </h1>
+
+                <p className="text-text-secondary">
+                  Access your dashboard.
+                </p>
               </div>
             </div>
 
             <div className="glass glow-border p-6 rounded-3xl border border-white/10 bg-black/20">
-              <h2 className="text-xl font-semibold text-text-primary mb-3">Welcome back</h2>
+              <h2 className="text-xl font-semibold text-text-primary mb-3">
+                Welcome Back
+              </h2>
+
               <p className="text-text-secondary text-sm leading-6">
-                Enter your credentials to continue. This frontend uses dummy authentication for demo purposes.
+                Login using your registered
+                TaskMaster account.
               </p>
             </div>
           </div>
 
           <div className="glass glow-border p-8 rounded-3xl border border-white/10">
-            <form onSubmit={handleSubmit} className="space-y-6">
+            <form
+              onSubmit={handleSubmit}
+              className="space-y-6"
+            >
               <div>
-                <label className="block text-sm text-text-secondary mb-2" htmlFor="email">Email</label>
+                <label
+                  className="block text-sm text-text-secondary mb-2"
+                  htmlFor="email"
+                >
+                  Email
+                </label>
+
                 <input
                   id="email"
                   type="email"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) =>
+                    setEmail(e.target.value)
+                  }
                   required
-                  className="w-full rounded-2xl border border-white/10 bg-[#0f172a] px-4 py-3 text-text-primary outline-none focus:border-accent-cyan focus:ring-2 focus:ring-accent-cyan/20"
-                  placeholder="admin@taskmaster.com"
+                  className="w-full rounded-2xl border border-white/10 bg-[#0f172a] px-4 py-3 text-text-primary outline-none"
+                  placeholder="Enter email"
                 />
               </div>
 
               <div>
-                <label className="block text-sm text-text-secondary mb-2" htmlFor="password">Password</label>
+                <label
+                  className="block text-sm text-text-secondary mb-2"
+                  htmlFor="password"
+                >
+                  Password
+                </label>
+
                 <div className="relative">
                   <input
                     id="password"
-                    type={showPassword ? 'text' : 'password'}
+                    type={
+                      showPassword
+                        ? 'text'
+                        : 'password'
+                    }
                     value={password}
-                    onChange={e => setPassword(e.target.value)}
+                    onChange={(e) =>
+                      setPassword(e.target.value)
+                    }
                     required
-                    className="w-full rounded-2xl border border-white/10 bg-[#0f172a] px-4 py-3 text-text-primary outline-none focus:border-accent-cyan focus:ring-2 focus:ring-accent-cyan/20"
-                    placeholder="Enter your password"
+                    className="w-full rounded-2xl border border-white/10 bg-[#0f172a] px-4 py-3 text-text-primary outline-none"
+                    placeholder="Enter password"
                   />
+
                   <button
                     type="button"
-                    onClick={() => setShowPassword(prev => !prev)}
+                    onClick={() =>
+                      setShowPassword(
+                        (prev) => !prev
+                      )
+                    }
                     className="absolute right-4 top-1/2 -translate-y-1/2 text-text-secondary text-sm"
                   >
-                    {showPassword ? 'Hide' : 'Show'}
+                    {showPassword
+                      ? 'Hide'
+                      : 'Show'}
                   </button>
                 </div>
               </div>
@@ -101,24 +164,40 @@ export default function Login() {
                   <input
                     type="checkbox"
                     checked={remember}
-                    onChange={() => setRemember(prev => !prev)}
-                    className="h-4 w-4 rounded border-white/20 bg-[#0f172a] text-accent-cyan"
+                    onChange={() =>
+                      setRemember(
+                        (prev) => !prev
+                      )
+                    }
+                    className="h-4 w-4"
                   />
+
                   Remember Me
                 </label>
-                <button type="button" className="text-sm text-accent-cyan hover:text-white transition-all">
-                  Forgot Password?
-                </button>
               </div>
 
-              {error && <p className="text-sm text-red-400">{error}</p>}
+              {error && (
+                <p className="text-red-400 text-sm">
+                  {error}
+                </p>
+              )}
 
               <button
                 type="submit"
-                className="w-full rounded-2xl bg-gradient-to-r from-accent-purple to-accent-cyan px-5 py-3 text-sm font-semibold text-dark-bg shadow-glow-purple hover:brightness-110 transition-all"
+                className="w-full rounded-2xl bg-gradient-to-r from-accent-purple to-accent-cyan px-5 py-3 text-sm font-semibold text-dark-bg"
               >
                 Login
               </button>
+
+              <p className="text-center text-sm text-text-secondary mt-4">
+  Don't have an account?{" "}
+  <Link
+    to="/register"
+    className="text-accent-cyan hover:underline"
+  >
+    Register
+  </Link>
+</p>
             </form>
           </div>
         </div>

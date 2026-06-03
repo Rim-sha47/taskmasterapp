@@ -1,7 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
-import { Search, Bell, LogOut } from 'lucide-react';
+import { Search, Bell} from 'lucide-react';
 import { useSearch } from '../../context/SearchContext';
 import Logo from './Logo';
 
@@ -132,14 +132,7 @@ export default function Navbar() {
             <Logo className="h-8 w-8 rounded-xl" />
           </motion.button>
 
-          <motion.button
-            whileHover={{ scale: 1.05 }}
-            whileTap={{ scale: 0.95 }}
-            onClick={handleLogout}
-            className="p-2 rounded-lg glass glow-border border-accent-purple/30 hover:shadow-glow-purple smooth-transition"
-          >
-            <LogOut size={18} className="text-accent-purple" />
-          </motion.button>
+          
         </div>
       </div>
     </motion.nav>

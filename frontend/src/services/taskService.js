@@ -1,0 +1,18 @@
+import api from "./api";
+
+export const getTasks = () =>
+  api.get("/tasks");
+
+export const createTask = (task) =>
+  api.post("/tasks", task);
+
+export const updateTask = (id, task) =>
+  api.put(`/tasks/${id}`, task);
+
+export const deleteTask = (id) =>
+  api.delete(`/tasks/${id}`);
+
+export const updateTaskStatus = (id, status) =>
+  api.patch(`/tasks/${id}/status`, {
+    status,
+  });
