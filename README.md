@@ -1,4 +1,4 @@
-# TaskMaster - Full Stack Project Management Application
+# TaskMasterApp - Full Stack Project Management Application
 
 ## Project Overview
 
