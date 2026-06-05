@@ -7,7 +7,17 @@ TaskMaster is a full-stack project management and team collaboration application
 The application enables organizations and teams to manage tasks, track project progress, organize schedules, manage team members, and monitor system activities through a centralized dashboard.
 
 ---
+Live link of a project: 
+https://peetlamahesh123.github.io/taskmasterapp/
 
+---
+## ScreenshotS  for Demo Output:
+<img width="1923" height="876" alt="image" src="https://github.com/user-attachments/assets/f4c07c0d-6ad4-41da-a175-791bae8e20b7" />
+<img width="1923" height="878" alt="image" src="https://github.com/user-attachments/assets/d529be07-638b-4f3d-9dfe-55abac9cbb62" />
+<img width="1923" height="880" alt="image" src="https://github.com/user-attachments/assets/ea2c79a0-c0b0-4b76-a698-9f61df416f6a" />
+<img width="1923" height="870" alt="image" src="https://github.com/user-attachments/assets/d7007ed4-d2e6-4a67-895d-67f82fa6a5d9" />
+
+---
 # Technology Stack
 
 ## Frontend
