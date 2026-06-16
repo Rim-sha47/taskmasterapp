@@ -24,12 +24,7 @@ https://peetlamahesh123.github.io/taskmasterapp/
 
 ## Frontend
 
-* React.js
-* React Router DOM
-* Framer Motion
-* Recharts
-* Lucide React Icons
-* CSS / Tailwind-based UI
+
 
 ## Backend
 
