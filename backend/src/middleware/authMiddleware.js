@@ -1,7 +1,5 @@
 const jwt = require("jsonwebtoken");
 const supabase = require("../config/supabase");
-
-
 const protect = async (req, res, next) => {
   try {
     let token;
