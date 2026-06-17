@@ -31,7 +31,6 @@ const protect = async (req, res, next) => {
       .single();
 
     req.user = user;
-
     next();
   } catch (error) {
     res.status(401).json({
