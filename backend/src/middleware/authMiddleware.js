@@ -19,7 +19,6 @@ const protect = async (req, res, next) => {
         message: "Not authorized",
       });
     }
-
     const decoded = jwt.verify(
       token,
       process.env.JWT_SECRET
