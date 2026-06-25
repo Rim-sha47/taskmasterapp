@@ -3,8 +3,7 @@
 ## Project Overview
 
 TaskMaster is a full-stack project management and team collaboration application built using React, Node.js, Express, Supabase, and modern UI technologies.
-
-
+The application enables organizations and teams to manage tasks, track project progress, organize schedules, manage team members, and monitor system activities through a centralized dashboard.
 
 ---
 Live link of a project: 
