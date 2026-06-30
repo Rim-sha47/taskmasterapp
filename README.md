@@ -32,9 +32,7 @@ https://peetlamahesh123.github.io/taskmasterapp/
 
 ## Backend
 
-* Node.js
-* Express.js
-* REST APIs
+
 
 ## Database
 
